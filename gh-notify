@@ -448,6 +448,12 @@ mark_individual_read() {
     IFS=' ' read -r _ thread_id thread_state _ <<<"$1"
     command gh api --silent --header "$GH_REST_API_VERSION" --method DELETE "notifications/threads/${thread_id}"
 }
+
+mark_individual_unsubscribed() {
+    local thread_id thread_state
+    IFS=' ' read -r _ thread_id thread_state _ <<<"$1"
+    command gh api --silent --header "$GH_REST_API_VERSION" --method PUT "notifications/threads/${thread_id}/subscription" \
+        --field ignored=true
 }
 
 select_notif() {
@@ -488,6 +494,7 @@ select_notif() {
             --bind "ctrl-p:toggle-preview+change-preview:if command grep -q PullRequest <<<{10}; then command gh pr diff {11} --patch --repo {5} | highlight_output; else view_notification {}; fi" \
             --bind "ctrl-r:reload:print_notifs || true" \
             --bind "ctrl-t:execute-silent(mark_individual_read {})+reload:print_notifs || true" \
+            --bind "ctrl-u:execute-silent(mark_individual_unsubscribed {})+reload:print_notifs || true" \
             --bind "enter:execute:view_notification --all_comments {} | less ${less_args[*]} >/dev/tty" \
             --bind "tab:toggle-preview+change-preview:view_notification {}" \
             --bind "?:toggle-preview+change-preview:print_help_text" \
