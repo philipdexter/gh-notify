@@ -447,7 +447,7 @@ mark_individual_read() {
     local thread_id thread_state
     IFS=' ' read -r _ thread_id thread_state _ <<<"$1"
     if [ "$thread_state" = "UNREAD" ]; then
-        command gh api --silent --header "$GH_REST_API_VERSION" --method PATCH "notifications/threads/${thread_id}"
+        command gh api --silent --header "$GH_REST_API_VERSION" --method DELETE "notifications/threads/${thread_id}"
     fi
 }
 
