@@ -454,6 +454,7 @@ mark_individual_unsubscribed() {
     IFS=' ' read -r _ thread_id thread_state _ <<<"$1"
     command gh api --silent --header "$GH_REST_API_VERSION" --method PUT "notifications/threads/${thread_id}/subscription" \
         --field ignored=true
+    command gh api --silent --header "$GH_REST_API_VERSION" --method DELETE "notifications/threads/${thread_id}"
 }
 
 select_notif() {
@@ -476,6 +477,7 @@ select_notif() {
     export -f process_page process_discussion process_url
     export -f highlight_output open_in_browser view_notification
     export -f mark_all_read mark_individual_read
+    export -f mark_all_read mark_individual_unsubscribed
     # The 'die' function is not exported because 'fzf' warns you about the error in
     # a failed 'print_notifs' call, but does not display the message.
 
